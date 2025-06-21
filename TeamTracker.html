@@ -2,6 +2,56 @@
 <html>
 <head>
   <title>Team Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      max-width: 480px;
+      margin: auto;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      font-size: 1rem;
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+
+    label {
+      font-size: 1rem;
+    }
+
+    #loader {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
   <h2>Login/Logout Tracker</h2>
@@ -14,13 +64,23 @@
     <button type="submit">Submit</button>
   </form>
 
+  <div id="loader">
+    <div class="spinner"></div>
+    <p style="text-align: center;">Submitting...</p>
+  </div>
+
   <p id="status"></p>
 
   <script>
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwQcuKPlni54FlWcj23jXXfK9LU36r8xImNMXdnpXJiQpC01PVKKBwNcjnc0xVXCw4OUg/exec'; // Replace this with your Web App URL
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwQcuKPlni54FlWcj23jXXfK9LU36r8xImNMXdnpXJiQpC01PVKKBwNcjnc0xVXCw4OUg/exec'; // Replace with your actual Web App URL
 
     document.getElementById('trackerForm').addEventListener('submit', function(e) {
       e.preventDefault();
+
+      // Show loader
+      document.getElementById('loader').style.display = 'block';
+      document.getElementById('status').textContent = '';
+
       navigator.geolocation.getCurrentPosition(function(position) {
         const data = {
           name: document.getElementById('name').value,
@@ -36,15 +96,19 @@
         })
         .then(res => res.text())
         .then(response => {
-          document.getElementById('status').textContent = "Submitted successfully!";
+          document.getElementById('status').textContent = "✅ Submitted successfully!";
           document.getElementById('trackerForm').reset();
         })
         .catch(err => {
-          document.getElementById('status').textContent = "Submission failed.";
+          document.getElementById('status').textContent = "❌ Submission failed.";
           console.error(err);
+        })
+        .finally(() => {
+          document.getElementById('loader').style.display = 'none';
         });
       }, function(error) {
-        document.getElementById('status').textContent = "Location access denied!";
+        document.getElementById('status').textContent = "❌ Location access denied!";
+        document.getElementById('loader').style.display = 'none';
       });
     });
   </script>
