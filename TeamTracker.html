@@ -3,7 +3,6 @@
 <head>
   <title>Team Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -51,6 +50,12 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -72,12 +77,11 @@
   <p id="status"></p>
 
   <script>
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwj26V27p4VvVxxcWr3WR0Ysog2-sK73mEUrvp9J6Au99X-2IlcN7iWGt3FBVn2CCELiw/exec'; // Replace with your actual Web App URL
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwj26V27p4VvVxxcWr3WR0Ysog2-sK73mEUrvp9J6Au99X-2IlcN7iWGt3FBVn2CCELiw/exec'; // Replace with your Apps Script Web App URL
 
     document.getElementById('trackerForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      // Show loader
       document.getElementById('loader').style.display = 'block';
       document.getElementById('status').textContent = '';
 
@@ -92,7 +96,7 @@
         fetch(scriptUrl, {
           method: 'POST',
           body: JSON.stringify(data),
-          contentType: 'application/json'
+          headers: { "Content-Type": "application/json" }
         })
         .then(res => res.text())
         .then(response => {
@@ -106,6 +110,7 @@
         .finally(() => {
           document.getElementById('loader').style.display = 'none';
         });
+
       }, function(error) {
         document.getElementById('status').textContent = "❌ Location access denied!";
         document.getElementById('loader').style.display = 'none';
